@@ -1,0 +1,512 @@
+# Exercice 1
+
+Pour configurer une instance Elasticsearch avec les paramètres données, il faut écrire :
+
+node.name: es-01
+cluster.name: magic-system
+
+Le nom du fichier à modifier pour paramétrer les options de la JVM est "jvm.options".
+
+La valeur à écrire pour limiter la heap size à 8GB maximum est "-Xmx8g".
+
+# Exercie 2
+
+POST /recettes-test/_bulk
+{"index":{"_id":"1"}}
+{"title": "Tarte aux pommes", "author": "Alice", "description": "Une tarte aux pommes croustillante et délicieuse", "publication_date": "2022-05-01", "pages": 20}
+{"index":{"_id":"2"}}
+{"title": "Gaufres au caramel", "author": "Bob", "description": "Des gaufres moelleuses avec une sauce caramel maison", "publication_date": "2021-12-15", "pages": 15}
+{"index":{"_id":"3"}}
+{"title": "Muffins au citron", "author": "Dimitri", "description": "Des muffins frais et acidulés", "publication_date": "2023-01-03", "pages": 18}
+{"index":{"_id":"4"}}
+{"title": "Crêpes à la framboise", "author": "Zoé", "description": "Des crêpes légères et fruitées", "publication_date": "2022-07-23", "pages": 22}
+{"index":{"_id":"5"}}
+{"title": "Tiramisu aux pommes caramélisées", "author": "Camille", "description": "Un tiramisu revisité avec des pommes caramélisées", "publication_date": "2021-11-11", "pages": 25}
+{"index":{"_id":"6"}}
+{"title": "Gâteau au citron", "author": "Alex", "description": "Un gâteau moelleux et parfumé au citron", "publication_date": "2023-02-14", "pages": 30}
+{"index":{"_id":"7"}}
+{"title": "Tarte aux framboises et citron vert", "author": "Alice", "description": "Une tarte légère et acidulée", "publication_date": "2022-08-09", "pages": 21}
+{"index":{"_id":"8"}}
+{"title": "Gaufres à la pomme", "author": "Bob", "description": "Des gaufres aux pommes cuites à la cannelle", "publication_date": "2021-09-30", "pages": 16}
+{"index":{"_id":"9"}}
+{"title": "Muffins au caramel", "author": "Dimitri", "description": "Des muffins gourmands au caramel fondant", "publication_date": "2022-04-19", "pages": 19}
+{"index":{"_id":"10"}}
+{"title": "Crêpes au citron et sucre", "author": "Zoé", "description": "Des crêpes classiques au citron et sucre", "publication_date": "2023-03-27", "pages": 23}
+{"index":{"_id":"11"}}
+{"title": "Gâteau aux framboises", "author": "Camille", "description": "Un gâteau aux framboises légèrement acidulé", "publication_date": "2021-10-10", "pages": 28}
+{"index":{"_id":"12"}}
+{"title": "Tarte au citron meringuée", "author": "Alex", "description": "Une tarte au citron avec une belle meringue dorée", "publication_date": "2023-04-01", "pages": 24}
+{"index":{"_id":"13"}}
+{"title": "Muffins aux framboises et citron", "author": "Dimitri", "description": "Des muffins moelleux et fruités", "publication_date": "2022-09-16", "pages": 17}
+{"index":{"_id":"14"}}
+{"title": "Crêpes au caramel", "author": "Zoé", "description": "Des crêpes avec une sauce caramel maison", "publication_date": "2023-02-28", "pages": 20}
+{"index":{"_id":"15"}}
+{"title": "Gaufres à la pomme et cannelle", "author": "Bob", "description": "Des gaufres avec des pommes cuites à la cannelle", "publication_date": "2022-01-07", "pages": 19}
+{"index":{"_id":"16"}}
+{"title": "Tiramisu aux framboises", "author": "Alice", "description": "Un tiramisu léger et fruité", "publication_date": "2021-12-25", "pages": 26}
+{"index":{"_id":"17"}}
+{"title": "Gâteau au citron et aux amandes", "author": "Camille", "description": "Un gâteau moelleux et parfumé aux amandes et au citron", "publication_date": "2022-10-03", "pages": 27}
+{"index":{"_id":"18"}}
+{"title": "Tarte aux pommes et à la cannelle", "author": "Alex", "description": "Une tarte aux pommes avec de la cannelle et une pâte sablée croquante", "publication_date": "2023-03-10", "pages": 23}
+{"index":{"_id":"19"}}
+{"title": "Muffins au caramel et noisettes", "author": "Dimitri", "description": "Des muffins gourmands avec un cœur de caramel et des éclats de noisettes", "publication_date": "2022-05-14", "pages": 22}
+{"index":{"_id":"20"}}
+{"title": "Crêpes à la pomme et cannelle", "author": "Zoé", "description": "Des crêpes avec des pommes cuites à la cannelle et une pointe de vanille", "publication_date": "2023-01-20", "pages": 21}
+
+# Exercice 3
+
+1.
+
+GET /recettes-test/_search
+{
+  "query": {
+    "match": {
+      "description": "pomme"
+    }
+  }
+}
+
+a. Je n'ai aucun résultat. Pour en avoir, il faudrait que je fasse un mapping avant pour définir comment le champ "description" doit être analysé avant l'indexation.
+
+2.
+
+GET /recettes-test/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "author": "Zoé" } },
+        { "range": { "pages": { "lt": 21 } } }
+      ]
+    }
+  }
+}
+
+a. J'ai obtenu un document.
+
+# Exercice 4
+
+PUT /recettes-test/_mapping
+{
+  "properties": {
+    "theme": {
+      "type": "text"
+    }
+  }
+}
+
+Je ne peux pas déterminer le type de champ approprié au champ "theme" car je ne connais pas les données qu'il a devoir stocker.
+J'ai choisi dans ce cas le type "text" car je pense qu'il va contenir des chaînes de caractères mais j'aurais pu mettre le type "integer" s'il devait contenir des valeurs numériques.
+
+# Exercice 5
+
+
+
+POST /_reindex
+{
+  "source": {
+    "index": "recettes-test"
+  },
+  "dest": {
+    "index": "recettes"
+  },
+  "script": {
+    "source": "ctx._source.remove('titre'); ctx._source['title'] = ctx._source['title']",
+    "lang": "painless"
+  }
+}
+
+# Exercice 6
+
+Si j'utilie l'index "recettes-test", j'obtiens l'erreur suivante avec les 2 requêtes car le champ "author" est de type "text" :
+
+"error": {
+    "root_cause": [
+      {
+        "type": "illegal_argument_exception",
+        "reason": "Fielddata is disabled on [author] in [recettes-test]. Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [author] in order to load field data by uninverting the inverted index. Note that this can use significant memory."
+      }
+
+Si j'utilie l'index réindexé de "recettes-text", qui est "recettes" je peux exécuter les requêtes et avoir des résultats :
+
+1. Requêtes :
+
+POST /recettes/_search
+{
+  "size": 0,
+  "query": {
+    "range": {
+      "publication_date": {
+        "lt": "2023-01-01"
+      }
+    }
+  },
+  "aggs": {
+    "auteurs": {
+      "terms": {
+        "field": "author"
+      }
+    }
+  }
+}
+
+Résultat :
+
+{
+  "took": 204,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 13,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "auteurs": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "Alice",
+          "doc_count": 3
+        },
+        {
+          "key": "Bob",
+          "doc_count": 3
+        },
+        {
+          "key": "Camille",
+          "doc_count": 3
+        },
+        {
+          "key": "Dimitri",
+          "doc_count": 3
+        },
+        {
+          "key": "Zoé",
+          "doc_count": 1
+        }
+      ]
+    }
+  }
+}
+
+2. Requêtes : 
+
+POST /recettes/_search
+{
+  "size": 0,
+  "aggs": {
+    "auteurs": {
+      "terms": {
+        "field": "author"
+      },
+      "aggs": {
+        "moyenne_pages": {
+          "avg": {
+            "field": "pages"
+          }
+        }
+      }
+    }
+  }
+}
+
+Résultats :
+
+{
+  "took": 136,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 20,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "auteurs": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "Dimitri",
+          "doc_count": 4,
+          "moyenne_pages": {
+            "value": 19
+          }
+        },
+        {
+          "key": "Zoé",
+          "doc_count": 4,
+          "moyenne_pages": {
+            "value": 21.5
+          }
+        },
+        {
+          "key": "Alex",
+          "doc_count": 3,
+          "moyenne_pages": {
+            "value": 25.666666666666668
+          }
+        },
+        {
+          "key": "Alice",
+          "doc_count": 3,
+          "moyenne_pages": {
+            "value": 22.333333333333332
+          }
+        },
+        {
+          "key": "Bob",
+          "doc_count": 3,
+          "moyenne_pages": {
+            "value": 16.666666666666668
+          }
+        },
+        {
+          "key": "Camille",
+          "doc_count": 3,
+          "moyenne_pages": {
+            "value": 26.666666666666668
+          }
+        }
+      ]
+    }
+  }
+}
+
+# Exercice 7
+
+PUT /recettes-fr
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "french": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "french_elision",
+            "french_stop",
+            "french_stemmer"
+          ]
+        }
+      },
+      "filter": {
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l", "m", "t", "qu", "n", "s",
+            "j", "d", "c", "jusqu", "quoiqu",
+            "lorsqu", "puisqu"
+          ]
+        },
+        "french_stop": {
+          "type": "stop",
+          "stopwords": "_french_"
+        },
+        "french_stemmer": {
+          "type": "stemmer",
+          "language": "light_french"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "french"
+      },
+      "author": {
+        "type": "keyword"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "french"
+      },
+      "publication_date": {
+        "type": "date"
+      },
+      "pages": {
+        "type": "integer"
+      }
+    }
+  }
+}
+
+POST _reindex
+{
+  "source": {
+    "index": "recettes"
+  },
+  "dest": {
+    "index": "recettes-fr"
+  },
+  "script": {
+    "source": """
+      ctx._source.remove('id');
+    """
+  }
+}
+
+# Exercice 8
+
+1.
+
+PUT recettes-fr/_doc/1
+{
+  "title": "Tarte aux pommes",
+  "author": "Jeanne",
+  "description": "Une délicieuse tarte aux pommes.",
+  "publication_date": "2022-01-01",
+  "pages": -5
+}
+
+Oui, le document a pu être indexé.
+
+2.
+
+GET recettes-fr/_search
+{
+  "query": {
+    "match": {
+      "description": "pomme"
+    }
+  }
+}
+
+6 Documents sont renvoyés (5 si je n'avais pas indexé le document avec le nombre de pages négatif)
+
+# Exercice 9
+
+GET _analyze
+{
+  "analyzer": "norwegian",
+  "text": "Jeg elsker klokka åtte-klasser"
+}
+
+Les tokens générés par l'analyzer sont les suivants :
+
+{
+  "tokens": [
+    {
+      "token": "elsk",
+      "start_offset": 4,
+      "end_offset": 10,
+      "type": "<ALPHANUM>",
+      "position": 1
+    },
+    {
+      "token": "klokk",
+      "start_offset": 11,
+      "end_offset": 17,
+      "type": "<ALPHANUM>",
+      "position": 2
+    },
+    {
+      "token": "ått",
+      "start_offset": 18,
+      "end_offset": 22,
+      "type": "<ALPHANUM>",
+      "position": 3
+    },
+    {
+      "token": "klass",
+      "start_offset": 23,
+      "end_offset": 30,
+      "type": "<ALPHANUM>",
+      "position": 4
+    }
+  ]
+}
+
+# Exercice 10
+
+1.
+
+(Après avoir supprimmer l'index "recettes" au préalable)
+
+PUT _index_template/recettes_template
+{
+  "index_patterns": ["recettes-*"],
+  "template": {
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "publication_date": {
+          "type": "date"
+        },
+        "pages": {
+          "type": "integer"
+        }
+      }
+    },
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "default": {
+            "type": "french"
+          }
+        }
+      }
+    },
+    "aliases": {
+      "recettes": {}
+    }
+  }
+}
+
+2.
+
+POST recettes-es/_doc
+{
+  "title": "Tortilla española",
+  "author": "Marta Sanchez",
+  "description": "Una receta de tortilla española",
+  "publication_date": "2022-04-28",
+  "pages": 2
+}
+
+3.
+
+GET recettes-es/_mapping
+
+4.
+
+GET recettes/_count
+
+{
+  "count": 1,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  }
+}
